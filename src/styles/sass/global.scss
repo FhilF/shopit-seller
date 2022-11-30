@@ -1,0 +1,62 @@
+@import "./variables/_breakpoints.scss";
+
+body {
+  font-family: "Open Sans", sans-serif !important;
+  min-height: 100vh;
+  background-color: #f5f5f5 !important;
+}
+
+.mantine-Text-root {
+  font-family: "Open Sans", sans-serif !important;
+}
+
+.card-page-content {
+  @media screen and (min-width: $md) {
+    min-height: 50vh;
+  }
+}
+
+.input-modal-lg {
+  @media screen and (min-width: $md) {
+    max-width: 60%;
+  }
+}
+
+.main {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.container-fluid {
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  @media screen and (min-width: $lg) {
+    max-width: 75%;
+    // padding-left: 16px;
+    // padding-right: 16px;
+  }
+  @media screen and (min-width: $xl) {
+    // width: 75%;
+    // padding-left: 16px;
+    // padding-right: 16px;
+  }
+}
+
+.mantine-Divider-root {
+  border-top-color: #e9ecef;
+}
+
+.page-content {
+  padding-left: 16px;
+  padding-right: 16px;
+  @media screen and (min-width: $xl) {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
