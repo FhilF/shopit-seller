@@ -21,44 +21,21 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { IconUpload } from "@tabler/icons";
 import { ReactComponent as UploadUserImageIcon } from "assets/svg/Avatar.svg";
 import axios from "axios";
-import Information from "components/shop/Profile";
 import { placeObj } from "lib";
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "utils/authProvider";
 import { z } from "zod";
-import Address from "../../components/shop/Address";
+import Address from "components/Shop/Address";
+import Profile from "components/Shop/Profile";
+import Private from "components/Shop/Private";
+import { setUpSchema } from "utils/Schema/ShopSchema";
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-const schema = z.object({
-  name: z.string().min(2, { message: "Enter your Shop Name" }),
-  description: z.string().optional(),
-  phoneNumber: z
-    .number({
-      required_error: "Enter your phone number",
-      invalid_type_error: "Enter your phone number",
-    })
-    .refine((data) => data.toString().length > 1, {
-      message: "Enter your phone number",
-    }),
-  region: z.string().min(1, { message: "Enter your region" }),
-  province: z.string().min(1, { message: "Enter your province" }),
-  city: z.string().min(1, { message: "Enter your city" }),
-  barangay: z.string().min(1, { message: "Enter your barangay" }),
-  zipCode: z
-    .number({
-      required_error: "Enter your postal code",
-      invalid_type_error: "Enter your postal code",
-    })
-    .refine((val) => val.toString().length > 1, {
-      message: "Invalid postal code",
-    }),
-  addressLine: z.string().min(1, { message: "Enter your address" }),
-});
-
-function SetupShop() {
+function SetupShop(props) {
+  const { setSessionedUserShop } = props;
   const [tempImgUrls, setTempImgUrls] = useState();
   const [file, setFile] = useState();
   const [isFormLoading, setIsFormLoading] = useState(false);
@@ -106,65 +83,81 @@ function SetupShop() {
   //   console.log(tempImgUrls);
   // }, [tempImgUrls]);
 
-  const getDataValue = (data, type) => {
-    console.log();
-    if (!data) return "";
-    const filtered = placeObj[type].json.filter(
-      (v) => v[placeObj[type][!isNaN(data) ? "id" : "label"]] === data
-    );
-    if (filtered.length === 0) return "";
-    return filtered[0][placeObj[type][isNaN(data) ? "id" : "label"]];
-    // return filtered[0].value;
-  };
-
   const form = useForm({
     initialValues: {
       name: "",
       description: "",
-      phoneNumber: null,
+      phoneNumber: { number: null, countryCode: 63 },
+      shopRepresentative: "",
+      image: [],
       region: "",
       province: "",
       city: "",
       barangay: "",
       zipCode: null,
-      addressLine: "",
+      addressLine1: "",
     },
-    validate: zodResolver(schema),
+    validate: zodResolver(setUpSchema),
   });
 
-  const save = (formData) => {
+  const save = () => {
     if (isFormLoading) {
       return true;
     }
     cleanNotifications();
-    const data = {
-      name: formData.name,
-      description: formData.description,
-      phoneNumber: formData.phoneNumber.toString(),
+    setIsFormLoading(true);
+    if (form.validate().hasErrors) {
+      showNotification({
+        title: "Error submitting form",
+        message: "Please finish the required inputs before submitting",
+        color: "red",
+      });
+      setIsFormLoading(false);
+      return true;
+    }
+    const formValues = Object.assign({}, { ...form.values });
+    // data.address.country = "Philippines";
+
+    const payload = {
+      name: formValues.name,
+      description: formValues.description,
+      shopRepresentative: formValues.shopRepresentative,
+      phoneNumber: formValues.phoneNumber,
       address: {
-        country: "Philippines",
-        region: getDataValue(formData.region, "region", true),
-        state: getDataValue(formData.province, "province", true),
-        city: getDataValue(formData.city, "city", true),
-        zipCode: formData.zipCode.toString(),
-        addressLine1: `${formData.addressLine}, ${getDataValue(
-          formData.barangay,
-          "barangay",
-          true
-        )}`,
+        region: formValues.region,
+        province: formValues.province,
+        city: formValues.city,
+        barangay: formValues.barangay,
+        zipCode: formValues.zipCode.toString(),
+        addressLine1: formValues.addressLine1,
       },
     };
+
+    setIsFormLoading(false);
+
+    const formData = new FormData();
+
+    formData.append("payload", JSON.stringify(payload));
+    if (formValues.image.length > 0)
+      formData.append("shopImage", formValues.image[0].file);
+
     axios
-      .post("api/shop", data, {
+      .post("api/shop", formData, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then((res) => {
         updateSessionedUser({ shop: res.data.Shop._id });
+        setSessionedUserShop(res.data.Shop);
         showNotification({
           title: "Updated Shop Info!",
           message: "Yoou have successfully updated your Shop Info.",
           color: "teal",
         });
+
+        setIsFormLoading(false);
         navigate("/portal");
       })
       .catch((err) => {
@@ -174,13 +167,14 @@ function SetupShop() {
             message: "There is an error from your form.",
             color: "red",
           });
-        console.log(err);
+
+        setIsFormLoading(false);
       });
     // console.log(formData);
   };
 
   return (
-    <Box className="container">
+    <Box>
       <Paper shadow="xs" p="xl">
         <Box>
           <Text weight={600} size={22} color="dark.4">
@@ -213,19 +207,27 @@ function SetupShop() {
               },
             })}
           >
-            <form onSubmit={form.onSubmit((values) => save(values))}>
-              <Information
-                isAddress={isAddress}
-                setIsAddress={setIsAddress}
-                form={form}
-                tempImgUrls={tempImgUrls}
-                handleMediaInputChange={handleMediaInputChange}
-              />
-              <Address
-                isAddress={isAddress}
-                setIsAddress={setIsAddress}
-                form={form}
-              />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                save();
+              }}
+            >
+              <Stack spacing="xl">
+                <Profile
+                  form={form}
+                  tempImgUrls={tempImgUrls}
+                  handleMediaInputChange={handleMediaInputChange}
+                  isFormLoading={isFormLoading}
+                />
+                <Private form={form} isFormLoading={isFormLoading} />
+                <Address form={form} isFormLoading={isFormLoading} />
+              </Stack>
+              <Group mt="xl" position="right">
+                <Button color="yellow.6" type="submit" disabled={isFormLoading}>
+                  Save
+                </Button>
+              </Group>
             </form>
           </Box>
         </Box>

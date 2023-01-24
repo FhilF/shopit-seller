@@ -6,10 +6,11 @@ const useStyles = createStyles((theme) => ({
     ".main": {
       display: "flex",
       justifyContent: "center",
-      ".container": {
+      ".child": {
         width: "100%",
         paddingLeft: "16px",
         paddingRight: "16px",
+        paddingBottom: "60px",
         [theme.fn.largerThan("lg")]: {
           maxWidth: theme.breakpoints.md + 100,
         },
@@ -91,13 +92,33 @@ const useStyles = createStyles((theme) => ({
 
         //   background: "red",
       },
-      ".content": {
+      ".container": {
         flex: 1,
-
         [theme.fn.smallerThan("lg")]: {
           marginLeft: "0px",
         },
         marginLeft: "24px",
+        ".content": {
+          paddingRight: "30px",
+          paddingLeft: "30px",
+          borderLeft: "2px solid #f6f6f6",
+          boxSizing: "border-box",
+          outline: "0",
+          marginLeft: "-2px",
+        },
+        ".mantine-Paper-root.content": {
+          marginLeft: "0px",
+          display: "block",
+          WebkitTextDecoration: "none",
+          textDecoration: "none",
+          color: "#000",
+          borderRadius: "4px",
+          boxShadow:
+            "0 1px 3px rgba(0, 0, 0, 0.05),0 1px 2px rgba(0, 0, 0, 0.1)",
+          width: "100%",
+          backgroundColor: "#fff",
+          borderLeft: "none",
+        },
       },
     },
   },

@@ -29,15 +29,20 @@ function Profile(props) {
   // }, [location]);
 
   return (
-    <Box className="container">
-      <Box className="portal">
-        <Box className="navbar">
-          <Box mt="xl" className="nav-group">
-            <Nav location={location} />
-          </Box>
+    <Box className="portal">
+      <Box className="navbar">
+        <Box mt="xl" className="nav-group">
+          <Nav location={location} />
         </Box>
-        <Box className="content">
-          <Paper
+      </Box>
+      <Box
+        className="container"
+        sx={(theme) => ({
+          
+        })}
+      >
+        {children}
+        {/* <Paper
             shadow="xs"
             px={30}
             sx={{
@@ -46,8 +51,7 @@ function Profile(props) {
             }}
           >
             {children}
-          </Paper>
-        </Box>
+          </Paper> */}
       </Box>
     </Box>
   );

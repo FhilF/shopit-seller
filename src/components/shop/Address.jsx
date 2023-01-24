@@ -18,11 +18,16 @@ import regionJson from "lib/ph-addresses/short-region";
 import provinceJson from "lib/ph-addresses/province";
 import cityJson from "lib/ph-addresses/city";
 import barangayJson from "lib/ph-addresses/barangay";
+import { getAddressValue } from "lib/address";
 
 function Address(props) {
-  const { isAddress, setIsAddress, form, isSetup } = props;
+  const { form, isSetup, isFormLoading, updateFieldsRef } = props;
 
-  const [dataUpdate, setDataUpdate] = useState(null);
+  const localupdateRef = useRef(true);
+
+  const updateRef =
+    updateFieldsRef === undefined ? localupdateRef : updateFieldsRef;
+
   const [regions, setRegions] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
@@ -36,60 +41,10 @@ function Address(props) {
     setRegions(regions);
   }, []);
 
-  const placeObj = {
-    region: { id: "id", label: "name", json: regionJson },
-    province: {
-      id: "province_code",
-      label: "province_name",
-      json: provinceJson,
-    },
-    city: {
-      id: "city_code",
-      label: "city_name",
-      json: cityJson,
-    },
-    barangay: {
-      id: "brgy_code",
-      label: "brgy_name",
-      json: barangayJson,
-    },
-  };
-
-  const getDataValue = (data, type) => {
-    if (!data) return "";
-    const filtered = placeObj[type].json.filter(
-      (v) => v[placeObj[type].label] === data
-    );
-    if (filtered.length === 0) return "";
-    return filtered[0][placeObj[type].id];
-    // return filtered[0].value;
-  };
-
-  useEffect(() => {
-    if (dataUpdate) {
-      // isSetup = true;
-      form.setValues({
-        fullname: dataUpdate.fullname ? dataUpdate.fullname : "",
-        phoneNumber: dataUpdate.phoneNumber ? dataUpdate.phoneNumber : null,
-        region: getDataValue(dataUpdate.region, "region"),
-        province: getDataValue(dataUpdate.province, "province"),
-        city: getDataValue(dataUpdate.city, "city"),
-        barangay: getDataValue(dataUpdate.barangay, "barangay"),
-        postalCode: dataUpdate.postalCode ? dataUpdate.postalCode : null,
-        addressLine: dataUpdate.addressLine ? dataUpdate.addressLine : "",
-        label: dataUpdate.label ? dataUpdate.label : "",
-        isDefault: dataUpdate.isDefault,
-      });
-      return;
-    }
-
-    // isSetup = false;
-  }, [dataUpdate]);
-
   useEffect(() => {
     const fRegion = form.values.region;
     if (fRegion) {
-      if (!isSetup) {
+      if (updateRef.current) {
         form.setFieldValue("province", "");
         form.setFieldValue("city", "");
         form.setFieldValue("barangay", "");
@@ -123,7 +78,7 @@ function Address(props) {
   useEffect(() => {
     const fProvince = form.values.province;
     if (fProvince) {
-      if (!isSetup) {
+      if (updateRef.current) {
         form.setFieldValue("city", "");
         form.setFieldValue("barangay", "");
         setCities([]);
@@ -149,7 +104,7 @@ function Address(props) {
   useEffect(() => {
     const fCity = form.values.city;
     if (fCity) {
-      if (!isSetup) {
+      if (updateRef.current) {
         form.setFieldValue("barangay", "");
         setBarangays([]);
       }
@@ -169,6 +124,17 @@ function Address(props) {
       }
     }
   }, [form.values.city]);
+
+  useEffect(() => {
+    // if (form.values.barangay) {
+    //   barangays.forEach((v) => {
+    //     if (v.value === form.values.barangay) {
+    //       console.log(v.value);
+    //     }
+    //   });
+    // }
+  }, [form.values.barangay]);
+
   return (
     <Box className="container-form">
       <Box
@@ -204,7 +170,14 @@ function Address(props) {
             placeholder="Select your region"
             withAsterisk
             data={regions}
+            disabled={isFormLoading}
             {...form.getInputProps("region")}
+            onChange={(v) => {
+              form.setFieldValue("region", v);
+              if (!updateRef.current) {
+                updateRef.current = true;
+              }
+            }}
           />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
@@ -217,8 +190,15 @@ function Address(props) {
             placeholder="Select your Province"
             withAsterisk
             data={provinces}
+            disabled={isFormLoading}
             // disabled={form.values.region.length !== 0 ? false : true}
             {...form.getInputProps("province")}
+            onChange={(v) => {
+              form.setFieldValue("province", v);
+              if (!updateRef.current) {
+                updateRef.current = true;
+              }
+            }}
           />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
@@ -231,7 +211,14 @@ function Address(props) {
             placeholder="Select your City"
             withAsterisk
             data={cities}
+            disabled={isFormLoading}
             {...form.getInputProps("city")}
+            onChange={(v) => {
+              form.setFieldValue("city", v);
+              if (!updateRef.current) {
+                updateRef.current = true;
+              }
+            }}
           />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
@@ -244,7 +231,14 @@ function Address(props) {
             placeholder="Select your Barangay"
             withAsterisk
             data={barangays}
+            disabled={isFormLoading}
             {...form.getInputProps("barangay")}
+            onChange={(v) => {
+              form.setFieldValue("barangay", v);
+              if (!updateRef.current) {
+                updateRef.current = true;
+              }
+            }}
           />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
@@ -256,12 +250,13 @@ function Address(props) {
           <NumberInput
             placeholder="Zip Code"
             hideControls={true}
+            disabled={isFormLoading}
             {...form.getInputProps("zipCode")}
           />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
           <Text size="sm" weight={600} color="dark.4">
-            Address Line
+            Address Line<span style={{ color: "red" }}>*</span>
           </Text>
         </Grid.Col>
         <Grid.Col span={12} sm={9} lg={8} className="item-b">
@@ -270,7 +265,8 @@ function Address(props) {
             autosize
             minRows={4}
             maxRows={5}
-            {...form.getInputProps("addressLine")}
+            disabled={isFormLoading}
+            {...form.getInputProps("addressLine1")}
           />
         </Grid.Col>
       </Grid>

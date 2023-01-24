@@ -8,33 +8,54 @@ import { Box } from "@mantine/core";
 import GlobalLayout from "layouts/Global";
 import PortalLayout from "layouts/Portal";
 
-import "./utils/axiosDefault";
+// import "./utils/axiosDefault";
 import axios from "axios";
 import SetupShop from "pages/SetupShop";
-import PortalPage from "pages/Portal";
+import HomePage from "pages/Portal/Home";
 import ProductPage from "pages/Portal/Product";
 import AddProductPage from "pages/Portal/Product/Add";
+import ViewProductPage from "pages/Portal/Product/View";
 // import ProfilePage from "pages/User/Account";
 // import AddressPage from "pages/User/Account/Address";
 // import OrderPage from "pages/User/Order";
 
 function App() {
   const { sessionedUser, signout } = useAuth();
+  const [sessionedUserShop, setSessionedUserShop] = useState();
+
+  // useEffect(() => {
+  //     axios
+  //       .get("test", {
+  //         withCredentials: true,
+  //         // headers: { "Content-Type": "application/json" },
+  //       })
+  //       .then((res) => {
+  //         console.log(res);
+  //         // setSessionedUserShop(res.data.Shop);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         // if (err.response?.status === 404) {
+  //         // }
+  //       });
+  // }, []);
 
   useEffect(() => {
     if (sessionedUser) {
-      // axios
-      //   .get("test", {
-      //     withCredentials: true,
-      //     // headers: { "Content-Type": "application/json" },
-      //   })
-      //   .then((res) => {
-      //     console.log({ res });
-      //   })
-      //   .catch((err) => {
-      //     if (err.response?.status === 404) {
-      //     }
-      //   });
+      axios
+        .get("api/shop", {
+          withCredentials: true,
+          // headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          console.log(res);
+          setSessionedUserShop(res.data.Shop);
+        })
+        .catch((err) => {
+          console.log(err);
+          // if (err.response?.status === 404) {
+          // }
+        });
     }
   }, [sessionedUser]);
 
@@ -55,36 +76,32 @@ function App() {
                   <Route
                     path="/portal/*"
                     element={
-                      <PortalLayout>
-                        <Routes>
-                          {/* <Route
-                          path="/account/*"
-                          element={
-                            <Routes>
-                              <Route path="/" element={<ProfilePage />} />
-                              <Route
-                                path="/profile"
-                                element={<ProfilePage />}
-                              />
-                              <Route
-                                path="/address"
-                                element={<AddressPage />}
-                              />
-                            </Routes>
-                          }
-                        /> */}
-                          <Route path="/" element={<PortalPage />} />
-                          <Route path="/product" element={<ProductPage />} />
-                          <Route
-                            path="/product/add"
-                            element={<AddProductPage />}
-                          />
-                          {/* <Route
-                            path="/product/add"
-                            element={}
-                          /> */}
-                        </Routes>
-                      </PortalLayout>
+                      sessionedUserShop ? (
+                        <PortalLayout>
+                          <Routes>
+                            <Route
+                              path="/"
+                              element={
+                                <HomePage
+                                  sessionedUserShop={sessionedUserShop}
+                                  setSessionedUserShop={setSessionedUserShop}
+                                />
+                              }
+                            />
+                            <Route path="/product" element={<ProductPage />} />
+                            <Route
+                              path="/product/add"
+                              element={<AddProductPage />}
+                            />
+                            <Route
+                              path="/product/:id"
+                              element={<ViewProductPage />}
+                            />
+                          </Routes>
+                        </PortalLayout>
+                      ) : (
+                        <></>
+                      )
                     }
                   ></Route>
                 </>
@@ -94,7 +111,12 @@ function App() {
                     path="/"
                     element={<Navigate to="/portal/setup-shop" />}
                   ></Route>
-                  <Route path="/portal/setup-shop" element={<SetupShop />} />
+                  <Route
+                    path="/portal/setup-shop"
+                    element={
+                      <SetupShop setSessionedUserShop={setSessionedUserShop} />
+                    }
+                  />
                 </>
               )}
             </>

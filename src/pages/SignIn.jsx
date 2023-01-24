@@ -1,37 +1,37 @@
 import React, { useState } from "react";
 import {
-  Card,
   Box,
   Text,
-  Badge,
   Button,
   Group,
   TextInput,
   PasswordInput,
-  Title,
+  Grid,
+  Image,
+  Paper,
+  Stack,
+  Divider,
+  UnstyledButton,
 } from "@mantine/core";
 
-import { z } from "zod";
 import { useForm, zodResolver } from "@mantine/form";
-import { IconAsterisk, IconUser } from "@tabler/icons";
-import { useNavigate, redirect } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import SignInImageLow from "assets/images/sign-in-image-low.png";
 import axios from "axios";
 import {
   showNotification,
   updateNotification,
   cleanNotifications,
 } from "@mantine/notifications";
-
 import { userSessionStorageName } from "config";
 import { useAuth } from "utils/authProvider";
-
+import { z } from "zod";
 const schema = z.object({
   username: z.string().min(1, { message: "Enter a username" }),
   password: z.string().min(1, { message: "Enter a password" }),
 });
+
 function SignIn(props) {
-  const { setSessionedUser } = props;
   const navigate = useNavigate();
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { signIn, signout } = useAuth();
@@ -43,80 +43,106 @@ function SignIn(props) {
     validate: zodResolver(schema),
   });
 
-  const signInAccount = async (formData) => {
+  const signInAccount = async () => {
     cleanNotifications();
-    signIn(formData, form, showNotification);
+    signIn(form);
     // signout()
   };
-
   return (
-    <Box
-      className="page-content"
-      sx={(theme) => ({
-        // background: theme.colors.blue[0],
-        minHeight: "87vh",
-        display: "flex",
-        justifyContent: "center",
-      })}
-    >
-      <Box
-        sx={(theme) => ({
-          width: "100%",
-          display: "flex",
-          [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
-            width: "75%",
-          },
-        })}
-      >
-        <Box
-          sx={(theme) => ({
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          })}
-        >
-          <Box sx={(theme) => ({ display: "block" })}>
-            <Box sx={(theme) => ({ width: "350px" })}>
-              <Card shadow="md" p="xl" radius="lg" withBorder>
-                <Group position="center" mb={36}>
-                  <Title order={3}>Sign in</Title>
-                </Group>
-                <form
-                  onSubmit={form.onSubmit((values) => signInAccount(values))}
+    <Box>
+      <Grid>
+        <Grid.Col span={7}>
+          <Box
+            sx={(theme) => ({
+              marginTop: "40px",
+              display: "flex",
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              ".mantine-Image-root": {
+                width: "550px",
+              },
+            })}
+          >
+            {/* <Box h={500} w={500}> */}
+            <Image src={SignInImageLow} />
+            {/* </Box> */}
+          </Box>
+        </Grid.Col>
+        <Grid.Col span={5}>
+          <Box
+            sx={{
+              display: "flex",
+              height: "100%",
+              alignItems: "center",
+              marginTop: "30px",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Paper shadow="lg" radius="xs" p="xl" sx={{ width: "400px" }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  signInAccount();
+                }}
+                autoComplete="off"
+              >
+                <Stack spacing={0}>
+                  <Text color="dark.3" size={26} weight={600}>
+                    Sign In
+                  </Text>
+                  <Text color="gray.6" size="sm">
+                    Sign in to your account and stop shopping!
+                  </Text>
+                </Stack>
+                <Stack
+                  mt="xl"
+                  spacing="xs"
+                  sx={(theme) => ({
+                    ".text-input": {
+                      label: { color: theme.colors.dark[3] },
+                    },
+                  })}
                 >
                   <TextInput
-                    // required
-                    // label="Email"
-                    placeholder="Username"
-                    icon={<IconUser />}
+                    className="text-input"
+                    label="Username"
+                    withAsterisk
+                    autoComplete="off"
+                    disabled={isFormLoading}
                     {...form.getInputProps("username")}
                   />
                   <PasswordInput
-                    // required
-                    placeholder="Password"
-                    icon={<IconAsterisk />}
-                    mt="md"
+                    className="text-input"
+                    label="Password"
+                    withAsterisk
+                    autoComplete="new-password"
+                    disabled={isFormLoading}
                     {...form.getInputProps("password")}
                   />
-                  <Group position="apart" mt={40}>
-                    <Button
-                      ml={-8}
-                      variant="subtle"
-                      radius="xs"
-                      compact
-                      onClick={() => navigate("/create-account")}
-                    >
-                      Create account
-                    </Button>
-                    <Button type="submit">Submit</Button>
+                </Stack>
+                <Stack spacing="xl" mt={30}>
+                  <Button type="submit" disabled={isFormLoading}>
+                    Sign in
+                  </Button>
+                  <Divider sx={{ width: "80px", alignSelf: "center" }} />
+                  <Group position="center" spacing={4}>
+                    <Text color="gray.6" size="sm">
+                      Dont have an account?
+                    </Text>
+                    <UnstyledButton component="a" href="/create-account">
+                      <Text color="yellow.7" size="sm" weight={600}>
+                        Register
+                      </Text>
+                    </UnstyledButton>
                   </Group>
-                </form>
-              </Card>
-            </Box>
+                </Stack>
+              </form>
+            </Paper>
           </Box>
-        </Box>
-      </Box>
+        </Grid.Col>
+      </Grid>
     </Box>
   );
 }

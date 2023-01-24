@@ -8,19 +8,22 @@ import { NotificationsProvider } from "@mantine/notifications";
 // import { Provider } from "react-redux";
 // import "styles/sass/global.scss";
 import { AuthProvider } from "utils/authProvider";
+import { AxiosInterceptor } from "utils/axiosDefault";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
   <BrowserRouter>
     <AuthProvider>
-      {/* <Provider store={store}> */}
+      <AxiosInterceptor>
+        {/* <Provider store={store}> */}
         <MantineProvider withGlobalStyles withNormalizeCSS>
           <NotificationsProvider>
             <App />
           </NotificationsProvider>
         </MantineProvider>
-      {/* </Provider> */}
+        {/* </Provider> */}
+      </AxiosInterceptor>
     </AuthProvider>
   </BrowserRouter>
   // </React.StrictMode>

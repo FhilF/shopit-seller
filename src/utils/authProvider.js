@@ -1,6 +1,6 @@
 import axios from "axios";
 import { userSessionStorageName } from "config";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   showNotification,
@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   // call this function when you want to authenticate the sessionedUser
-  const signIn = async (formData, form) => {
+  const signIn = async (form) => {
     axios
-      .post("auth/signin", formData, {
+      .post("auth/signin", form.values, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
         // credentials: "same-origin",
@@ -69,13 +69,41 @@ export const AuthProvider = ({ children }) => {
   // call this function to sign out logged in sessionedUser
   const signout = () => {
     axios
-      .get("/auth/signout")
-      .then(() => {
+      .get("/auth/signout", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        localStorage.removeItem(userSessionStorageName);
         setSessionedUser(null);
         showNotification({
           title: "Signed out!",
           // message: "Sorry we can't process your request!",
           color: "green",
+        });
+        navigate("/", { replace: true });
+      })
+      .catch((err) => {
+        console.log(err);
+        showNotification({
+          title: "Error!",
+          message: "Sorry we can't process your request!",
+          color: "red",
+        });
+      });
+  };
+
+  const signoutExpiredSession = () => {
+    axios
+      .get("/auth/signout", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        localStorage.removeItem(userSessionStorageName);
+        setSessionedUser(null);
+        showNotification({
+          title: "Session Expired!",
+          // message: "Sorry we can't process your request!",
+          color: "yellow",
         });
         navigate("/", { replace: true });
       })
@@ -95,6 +123,7 @@ export const AuthProvider = ({ children }) => {
       signIn,
       signout,
       updateSessionedUser,
+      signoutExpiredSession,
     }),
     [sessionedUser]
   );

@@ -14,10 +14,10 @@ import {
 } from "@mantine/core";
 import { IconUpload } from "@tabler/icons";
 import React from "react";
+import { useState } from "react";
 
 function Profile(props) {
-  const { isAddress, isSetup, form, tempImgUrls, handleMediaInputChange } =
-    props;
+  const { pTempImgUrl, setPTempImgUrl, isSetup, form, isFormLoading } = props;
 
   return (
     <Box className="container-form">
@@ -50,63 +50,18 @@ function Profile(props) {
           </Text>
         </Grid.Col>
         <Grid.Col span={12} sm={9} lg={8} className="item-b">
+          {/* <Stack align="center">
+            <Group position="center">
+            </Group>
+           
+          </Stack> */}
           <Group>
-            <Box
-              sx={(theme) => ({
-                // position: "relative",
-                [theme.fn.smallerThan("sm")]: {
-                  marginTop: "4px",
-                },
-              })}
-            >
-              <input
-                accept="image/png, image/gif, image/jpeg"
-                style={{ display: "none" }}
-                id="raised-button-file"
-                type="file"
-                onChange={async (e) => {
-                  await handleMediaInputChange(e);
-                }}
-                className="input-upload"
-                // disabled={formLoading}
-              />
-              <label
-                htmlFor="raised-button-file"
-                style={{
-                  display: "inline-block",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  border: "2px solid #e7e7e7",
-                }}
-              >
-                {tempImgUrls ? (
-                  <Avatar
-                    src={tempImgUrls}
-                    size={80}
-                    alt="prev-shop-logo"
-                    sx={(theme) => ({
-                      borderRadius: "50%",
-                      ".mantine-Avatar-placeholder": {
-                        backgroundColor: theme.colors.gray[3],
-                      },
-                    })}
-                  />
-                ) : (
-                  <Avatar
-                    size={80}
-                    alt="upload-shop-logo"
-                    sx={(theme) => ({
-                      borderRadius: "50%",
-                      ".mantine-Avatar-placeholder": {
-                        backgroundColor: theme.colors.gray[3],
-                      },
-                    })}
-                  >
-                    <IconUpload />
-                  </Avatar>
-                )}
-              </label>
-            </Box>
+            <Image
+              form={form}
+              isFormLoading={isFormLoading}
+              pTempImgUrl={pTempImgUrl}
+              setPTempImgUrl={setPTempImgUrl}
+            />
             <Box>
               <List size="xs">
                 <List.Item>
@@ -125,6 +80,18 @@ function Profile(props) {
               </List>
             </Box>
           </Group>
+          <TextInput
+            mt={4}
+            sx={{
+              ".mantine-Text-root": {
+                marginBottom: "-4px",
+              },
+              ".mantine-Input-wrapper": {
+                display: "none",
+              },
+            }}
+            {...form.getInputProps(`image`)}
+          />
         </Grid.Col>
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
           <Text size="sm" weight={600} color="dark.4">
@@ -132,7 +99,11 @@ function Profile(props) {
           </Text>
         </Grid.Col>
         <Grid.Col span={12} sm={9} lg={8} className="item-b">
-          <TextInput placeholder="Shop Name" {...form.getInputProps("name")} />
+          <TextInput
+            placeholder="Shop Name"
+            disabled={isFormLoading}
+            {...form.getInputProps("name")}
+          />
         </Grid.Col>
 
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
@@ -146,6 +117,7 @@ function Profile(props) {
             autosize
             minRows={4}
             maxRows={5}
+            disabled={isFormLoading}
             {...form.getInputProps("description")}
           />
         </Grid.Col>
@@ -153,5 +125,113 @@ function Profile(props) {
     </Box>
   );
 }
+
+const Image = (props) => {
+  const { form, isFormLoading, imageUrl, pTempImgUrl, setPTempImgUrl } = props;
+  const [tempImgUrl, setTempImgUrl] = useState(null);
+
+  const handleMediaInputChange = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    if (!file) {
+      return true;
+    }
+    form.setValues({ image: [{ file: file }] });
+    if (setPTempImgUrl) {
+      setPTempImgUrl(URL.createObjectURL(file));
+    } else {
+      setTempImgUrl(URL.createObjectURL(file));
+    }
+  };
+
+  return (
+    <Box
+      sx={(theme) => ({
+        // position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        width: "120px",
+        [theme.fn.smallerThan("sm")]: {
+          marginTop: "4px",
+        },
+      })}
+    >
+      <input
+        accept="image/png, image/jpeg"
+        style={{ display: "none" }}
+        id={`upload`}
+        type="file"
+        onChange={async (e) => {
+          await handleMediaInputChange(e);
+        }}
+        className="input-upload2"
+        disabled={isFormLoading}
+      />
+      <label
+        htmlFor={`upload`}
+        style={{
+          display: "inline-block",
+          borderRadius: "50%",
+          cursor: isFormLoading ? "auto" : "pointer",
+          border: "2px solid #e7e7e7",
+        }}
+      >
+        {setPTempImgUrl ? (
+          pTempImgUrl ? (
+            <Avatar
+              src={pTempImgUrl}
+              size={80}
+              alt="prev-shop-logo"
+              sx={(theme) => ({
+                borderRadius: "50%",
+                ".mantine-Avatar-placeholder": {
+                  backgroundColor: theme.colors.gray[3],
+                },
+              })}
+            />
+          ) : (
+            <Avatar
+              size={80}
+              alt="upload-shop-logo"
+              sx={(theme) => ({
+                borderRadius: "50%",
+                ".mantine-Avatar-placeholder": {
+                  backgroundColor: theme.colors.gray[3],
+                },
+              })}
+            >
+              <IconUpload />
+            </Avatar>
+          )
+        ) : tempImgUrl ? (
+          <Avatar
+            src={tempImgUrl}
+            size={80}
+            alt="prev-shop-logo"
+            sx={(theme) => ({
+              borderRadius: "50%",
+              ".mantine-Avatar-placeholder": {
+                backgroundColor: theme.colors.gray[3],
+              },
+            })}
+          />
+        ) : (
+          <Avatar
+            size={80}
+            alt="upload-shop-logo"
+            sx={(theme) => ({
+              borderRadius: "50%",
+              ".mantine-Avatar-placeholder": {
+                backgroundColor: theme.colors.gray[3],
+              },
+            })}
+          >
+            <IconUpload />
+          </Avatar>
+        )}
+      </label>
+    </Box>
+  );
+};
 
 export default Profile;

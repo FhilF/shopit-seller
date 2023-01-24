@@ -16,10 +16,10 @@ import { IconUpload } from "@tabler/icons";
 import React from "react";
 
 function Info(props) {
-  const { isSetup, form } = props;
+  const { isSetup, form, isFormLoading } = props;
 
   return (
-    <Box className="container-form">
+    <Box>
       <Box
         sx={(theme) => ({
           marginBottom: "30px",
@@ -45,6 +45,18 @@ function Info(props) {
       <Grid gutter="lg" className="input-container">
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
           <Text size="sm" weight={600} color="dark.4">
+            Shop Representative<span style={{ color: "red" }}>*</span>
+          </Text>
+        </Grid.Col>
+        <Grid.Col span={12} sm={9} lg={8} className="item-b">
+          <TextInput
+            placeholder="Owner/Representative Name"
+            disabled={isFormLoading}
+            {...form.getInputProps("shopRepresentative")}
+          />
+        </Grid.Col>
+        <Grid.Col span={12} sm={3} lg={4} className="item-a">
+          <Text size="sm" weight={600} color="dark.4">
             Phone Number<span style={{ color: "red" }}>*</span>
           </Text>
         </Grid.Col>
@@ -57,7 +69,8 @@ function Info(props) {
                 +63
               </Text>
             }
-            {...form.getInputProps("phoneNumber")}
+            disabled={isFormLoading}
+            {...form.getInputProps("phoneNumber.number")}
           />
         </Grid.Col>
       </Grid>

@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconX } from "@tabler/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const gridSx = (theme) => {
   return {
@@ -38,7 +38,7 @@ const gridSx = (theme) => {
 };
 
 function ProductSpecification(props) {
-  const { specificationForm } = props;
+  const { specificationForm, isFormLoading, productEdit } = props;
   const addRow = () => {
     specificationForm.insertListItem("specifications", {
       label: "",
@@ -58,6 +58,19 @@ function ProductSpecification(props) {
     }
     specificationForm.removeListItem("specifications", i);
   };
+
+  useEffect(() => {
+    if (productEdit) {
+      const newSpecs = productEdit.specifications.map((v) => {
+        return {
+          id: Date.now() + Math.random(),
+          label: v.label,
+          value: v.value,
+        };
+      });
+      specificationForm.setValues({ specifications: newSpecs });
+    }
+  }, [productEdit]);
 
   return (
     <Stack>
@@ -121,6 +134,7 @@ function ProductSpecification(props) {
                   <Box className="inner">
                     <TextInput
                       placeholder="Ex: Brand"
+                      disabled={isFormLoading}
                       {...specificationForm.getInputProps(
                         `specifications.${i}.label`
                       )}
@@ -131,6 +145,7 @@ function ProductSpecification(props) {
                   <Box>
                     <TextInput
                       placeholder="Ex Value: Nike"
+                      disabled={isFormLoading}
                       {...specificationForm.getInputProps(
                         `specifications.${i}.value`
                       )}
@@ -144,6 +159,7 @@ function ProductSpecification(props) {
                       onClick={() => {
                         removeRow(i);
                       }}
+                      disabled={isFormLoading}
                     >
                       <IconX size={18} />
                     </ActionIcon>
@@ -155,7 +171,11 @@ function ProductSpecification(props) {
         </Stack>
         <Box pt={40} sx={{ width: "100%" }}>
           <Group position="right" mr="xl">
-            <Button color="yellow.6" onClick={() => addRow()}>
+            <Button
+              disabled={isFormLoading}
+              color="yellow.6"
+              onClick={() => addRow()}
+            >
               Add
             </Button>
           </Group>
