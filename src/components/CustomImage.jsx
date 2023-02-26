@@ -2,19 +2,17 @@ import { Box } from "@mantine/core";
 import React from "react";
 
 function CustomImage(props) {
-  const { src, alt, height } = props;
+  const { src, alt, height, width } = props;
   return (
-    <Box
-      sx={{ height: height ? height : "100%", overflow: "hidden", zIndex: 0 }}
-    >
+    <Box sx={{ height: "100%", overflow: "hidden", zIndex: 0 }}>
       <Box sx={{ position: "relative" }}>
         <img
           src={src}
           alt={alt}
           style={{
             objectFit: "contain",
-            width: "100%",
-            height: "200px",
+            width: width ? width : "100%",
+            height: height ? height : "200px",
           }}
         />
       </Box>

@@ -15,6 +15,8 @@ import HomePage from "pages/Portal/Home";
 import ProductPage from "pages/Portal/Product";
 import AddProductPage from "pages/Portal/Product/Add";
 import ViewProductPage from "pages/Portal/Product/View";
+import Order from "pages/Portal/Order";
+import View from "pages/Portal/Order/View";
 // import ProfilePage from "pages/User/Account";
 // import AddressPage from "pages/User/Account/Address";
 // import OrderPage from "pages/User/Order";
@@ -45,10 +47,8 @@ function App() {
       axios
         .get("api/shop", {
           withCredentials: true,
-          // headers: { "Content-Type": "application/json" },
         })
         .then((res) => {
-          console.log(res);
           setSessionedUserShop(res.data.Shop);
         })
         .catch((err) => {
@@ -97,6 +97,8 @@ function App() {
                               path="/product/:id"
                               element={<ViewProductPage />}
                             />
+                            <Route path="/order/:id" element={<View />} />
+                            <Route path="/order" element={<Order />} />
                           </Routes>
                         </PortalLayout>
                       ) : (

@@ -75,7 +75,7 @@ const Nav = ({ location }) => {
       ],
     },
     {
-      label: "My Orders",
+      label: "Orders",
       icon: <IconPackage />,
       basePath: "/portal",
       link: "order",

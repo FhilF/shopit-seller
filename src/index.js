@@ -9,6 +9,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 // import "styles/sass/global.scss";
 import { AuthProvider } from "utils/authProvider";
 import { AxiosInterceptor } from "utils/axiosDefault";
+import theme from "styles/mantineTheme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,7 +18,7 @@ root.render(
     <AuthProvider>
       <AxiosInterceptor>
         {/* <Provider store={store}> */}
-        <MantineProvider withGlobalStyles withNormalizeCSS>
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
           <NotificationsProvider>
             <App />
           </NotificationsProvider>
