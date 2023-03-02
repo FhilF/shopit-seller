@@ -26,6 +26,7 @@ import Cancelled from "./Cancelled";
 import Completed from "./Completed";
 import ConfirmDialog from "./ConfirmDialog";
 import Pending from "./Pending";
+import ToReceive from "./ToReceive";
 import ToShip from "./ToShip";
 
 function fetchData(URL) {
@@ -175,7 +176,7 @@ function Order() {
               </Tabs.Panel>
 
               <Tabs.Panel value="receive" pt="xs">
-                Settings tab content
+                <ToReceive/>
               </Tabs.Panel>
 
               <Tabs.Panel value="completed" pt="xs">

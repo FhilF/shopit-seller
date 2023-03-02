@@ -3,20 +3,27 @@ import { createStyles } from "@mantine/core";
 const useStyles = createStyles((theme) => ({
   global: {
     display: "block",
+    ".responsive": {
+      width: "100%",
+      [theme.fn.largerThan("md")]: {
+        maxWidth: theme.breakpoints.md + 180,
+      },
+
+      [theme.fn.largerThan("lg")]: {
+        maxWidth: theme.breakpoints.md + 200,
+      },
+      [theme.fn.largerThan("xl")]: {
+        maxWidth: theme.breakpoints.lg,
+      },
+      paddingLeft: "16px",
+      paddingRight: "16px",
+    },
     ".main": {
       display: "flex",
       justifyContent: "center",
+      minHeight: "80vh",
       ".child": {
-        width: "100%",
-        paddingLeft: "16px",
-        paddingRight: "16px",
         paddingBottom: "60px",
-        [theme.fn.largerThan("lg")]: {
-          maxWidth: theme.breakpoints.md + 100,
-        },
-        [theme.fn.largerThan("xl")]: {
-          maxWidth: theme.breakpoints.lg,
-        },
       },
 
       ".portal": {
@@ -30,10 +37,7 @@ const useStyles = createStyles((theme) => ({
             minWidth: "200px",
           },
           [theme.fn.largerThan("xl")]: {
-            // width: "200px",
-            // minWidth: "200px",
           },
-          // maxWidth: "200px",
           ".nav-group": {
             ".nav-item-container": {
               ".link": {
@@ -80,17 +84,12 @@ const useStyles = createStyles((theme) => ({
                     ":hover": {
                       background: theme.colors.gray[1],
                     },
-                    //   paddingLeft: "8px",
-                    //   paddingRight: "8px",
                   },
-                  // marginLeft: "40px",
                 },
               },
             },
           },
         },
-
-        //   background: "red",
       },
       ".container": {
         flex: 1,
@@ -105,6 +104,7 @@ const useStyles = createStyles((theme) => ({
           boxSizing: "border-box",
           outline: "0",
           marginLeft: "-2px",
+          minHeight: "85vh",
         },
         ".mantine-Paper-root.content": {
           marginLeft: "0px",

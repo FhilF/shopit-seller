@@ -24,7 +24,11 @@ const AxiosInterceptor = ({ children }) => {
 
     const errInterceptor = (error) => {
       if (error.response?.status === 401) {
-        signoutExpiredSession();
+        return signoutExpiredSession();
+      }
+
+      if (error.response?.status === 403) {
+        return window.location.reload();
       }
 
       return Promise.reject(error);

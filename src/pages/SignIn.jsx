@@ -12,10 +12,11 @@ import {
   Stack,
   Divider,
   UnstyledButton,
+  Flex,
 } from "@mantine/core";
 
 import { useForm, zodResolver } from "@mantine/form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SignInImageLow from "assets/images/sign-in-image-low.png";
 import axios from "axios";
 import {
@@ -23,9 +24,10 @@ import {
   updateNotification,
   cleanNotifications,
 } from "@mantine/notifications";
-import { userSessionStorageName } from "config";
 import { useAuth } from "utils/authProvider";
 import { z } from "zod";
+import { apiServer } from "config";
+import GoogleIcon from "assets/images/google.png";
 const schema = z.object({
   username: z.string().min(1, { message: "Enter a username" }),
   password: z.string().min(1, { message: "Enter a password" }),
@@ -34,7 +36,7 @@ const schema = z.object({
 function SignIn(props) {
   const navigate = useNavigate();
   const [isFormLoading, setIsFormLoading] = useState(false);
-  const { signIn, signout } = useAuth();
+  const { signIn, signout, signInWithGoogle } = useAuth();
   const form = useForm({
     initialValues: {
       username: "",
@@ -47,6 +49,13 @@ function SignIn(props) {
     cleanNotifications();
     signIn(form);
     // signout()
+  };
+
+  const signInGoogle = () => {
+    window.open(
+      `${apiServer}/auth/google?origin=${window.location.origin}`,
+      "_self"
+    );
   };
   return (
     <Box>
@@ -81,64 +90,70 @@ function SignIn(props) {
             }}
           >
             <Paper shadow="lg" radius="xs" p="xl" sx={{ width: "400px" }}>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  signInAccount();
-                }}
-                autoComplete="off"
+              <Stack spacing={0}>
+                <Text color="dark.3" size={26} weight={600}>
+                  Sign In
+                </Text>
+                <Text color="gray.6" size="sm">
+                  Sign in to your account and stop shopping!
+                </Text>
+              </Stack>
+              <Stack
+                mt="xl"
+                spacing="xs"
+                sx={(theme) => ({
+                  ".text-input": {
+                    label: { color: theme.colors.dark[3] },
+                  },
+                })}
               >
-                <Stack spacing={0}>
-                  <Text color="dark.3" size={26} weight={600}>
-                    Sign In
-                  </Text>
-                  <Text color="gray.6" size="sm">
-                    Sign in to your account and stop shopping!
-                  </Text>
-                </Stack>
-                <Stack
-                  mt="xl"
-                  spacing="xs"
-                  sx={(theme) => ({
-                    ".text-input": {
-                      label: { color: theme.colors.dark[3] },
-                    },
-                  })}
+                <TextInput
+                  className="text-input"
+                  label="Username"
+                  withAsterisk
+                  autoComplete="off"
+                  disabled={isFormLoading}
+                  {...form.getInputProps("username")}
+                />
+                <PasswordInput
+                  className="text-input"
+                  label="Password"
+                  withAsterisk
+                  autoComplete="new-password"
+                  disabled={isFormLoading}
+                  {...form.getInputProps("password")}
+                />
+              </Stack>
+              <Stack spacing="md" mt={30}>
+                <Button
+                  disabled={isFormLoading}
+                  color="yellow.8"
+                  onClick={() => signInAccount()}
                 >
-                  <TextInput
-                    className="text-input"
-                    label="Username"
-                    withAsterisk
-                    autoComplete="off"
-                    disabled={isFormLoading}
-                    {...form.getInputProps("username")}
-                  />
-                  <PasswordInput
-                    className="text-input"
-                    label="Password"
-                    withAsterisk
-                    autoComplete="new-password"
-                    disabled={isFormLoading}
-                    {...form.getInputProps("password")}
-                  />
-                </Stack>
-                <Stack spacing="xl" mt={30}>
-                  <Button type="submit" disabled={isFormLoading}>
-                    Sign in
-                  </Button>
-                  <Divider sx={{ width: "80px", alignSelf: "center" }} />
-                  <Group position="center" spacing={4}>
-                    <Text color="gray.6" size="sm">
-                      Dont have an account?
+                  Sign in
+                </Button>
+
+                <Button
+                  disabled={isFormLoading}
+                  onClick={() => {
+                    signInGoogle();
+                  }}
+                  leftIcon={<Flex p={4} bg="#ffffff"><Image height={15} src={GoogleIcon} /></Flex>}
+                >
+                  Sign in with Google
+                </Button>
+                <Divider sx={{ width: "80px", alignSelf: "center" }} />
+                <Group position="center" spacing={4}>
+                  <Text color="gray.6" size="sm">
+                    Dont have an account?
+                  </Text>
+                  <UnstyledButton component="a" href="/create-account">
+                    <Text color="yellow.8" size="sm" weight={600}>
+                      Register
                     </Text>
-                    <UnstyledButton component="a" href="/create-account">
-                      <Text color="yellow.7" size="sm" weight={600}>
-                        Register
-                      </Text>
-                    </UnstyledButton>
-                  </Group>
-                </Stack>
-              </form>
+                  </UnstyledButton>
+                </Group>
+              </Stack>
             </Paper>
           </Box>
         </Grid.Col>

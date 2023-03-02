@@ -10,7 +10,7 @@ import Address from "components/Shop/Address";
 import { getAddressValue } from "lib/address";
 
 function AddressTab(props) {
-  const { sessionedUserShop, setSessionedUserShop, sessionedUserShopRef } =
+  const { sessionedUserData, setSessionedUserData, sessionedUserShopRef } =
     props;
 
   const updateFieldsRef = useRef(false);
@@ -86,7 +86,10 @@ function AddressTab(props) {
       })
       .then((res) => {
         const shop = res.data.Shop;
-        setSessionedUserShop(shop);
+        setSessionedUserData((prevState) => ({
+          ...prevState,
+          Shop: { ...shop },
+        }));
         sessionedUserShopRef.current = {
           ...sessionedUserShopRef.current,
           address: {

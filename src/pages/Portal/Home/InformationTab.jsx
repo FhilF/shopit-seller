@@ -10,7 +10,7 @@ import { profileEditSchema, privateEditSchema } from "utils/Schema/ShopSchema";
 import _ from "lodash";
 
 function InformationTab(props) {
-  const { sessionedUserShop, setSessionedUserShop, sessionedUserShopRef } =
+  const { sessionedUserData, setSessionedUserData, sessionedUserShopRef } =
     props;
 
   const navigate = useNavigate();
@@ -40,27 +40,17 @@ function InformationTab(props) {
     >
       <Stack spacing={40}>
         <ProfileComponent
-          sessionedUserShop={sessionedUserShop}
-          setSessionedUserShop={setSessionedUserShop}
+          sessionedUserData={sessionedUserData}
+          setSessionedUserData={setSessionedUserData}
           sessionedUserShopRef={sessionedUserShopRef}
           navigate={navigate}
         />
         <PrivateComponent
-          sessionedUserShop={sessionedUserShop}
-          setSessionedUserShop={setSessionedUserShop}
+          sessionedUserData={sessionedUserData}
+          setSessionedUserData={setSessionedUserData}
           sessionedUserShopRef={sessionedUserShopRef}
           navigate={navigate}
-        />
-        {/* <form onSubmit={personalForm.onSubmit((values) => console.log(values))}>
-          <Stack>
-            <Info form={personalForm} />
-            <Group position="right">
-              <Button color="yellow.6" type="submit">
-                Save
-              </Button>
-            </Group>
-          </Stack>
-        </form> */}
+        /> 
       </Stack>
     </Box>
   );
@@ -69,18 +59,20 @@ function InformationTab(props) {
 const PrivateComponent = (props) => {
   const {
     sessionedUserShopRef,
-    sessionedUserShop,
-    setSessionedUserShop,
+    sessionedUserData,
+    setSessionedUserData,
     navigate,
   } = props;
+  
+  const shop = sessionedUserData.Shop;
 
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [reset, setReset] = useState(false);
 
   const form = useForm({
     initialValues: {
-      phoneNumber: sessionedUserShop.phoneNumber,
-      shopRepresentative: sessionedUserShop.shopRepresentative,
+      phoneNumber: shop.phoneNumber,
+      shopRepresentative: shop.shopRepresentative,
     },
     validate: zodResolver(privateEditSchema),
   });
@@ -88,7 +80,7 @@ const PrivateComponent = (props) => {
   const cancel = () => {
     form.setValues({
       shopRepresentative: sessionedUserShopRef.current.shopRepresentative,
-      phoneNumber: sessionedUserShop.phoneNumber,
+      phoneNumber: sessionedUserShopRef.current.phoneNumber,
     });
   };
 
@@ -132,7 +124,10 @@ const PrivateComponent = (props) => {
       })
       .then((res) => {
         const shop = res.data.Shop;
-        setSessionedUserShop(shop);
+        setSessionedUserData((prevState) => ({
+          ...prevState,
+          Shop: { ...shop },
+        }));
         sessionedUserShopRef.current = {
           ...sessionedUserShopRef.current,
           shopRepresentative: shop.shopRepresentative,
@@ -205,21 +200,23 @@ const PrivateComponent = (props) => {
 const ProfileComponent = (props) => {
   const {
     sessionedUserShopRef,
-    sessionedUserShop,
-    setSessionedUserShop,
+    sessionedUserData,
+    setSessionedUserData,
     navigate,
   } = props;
 
+  const shop = sessionedUserData.Shop;
+
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [tempImgUrl, setTempImgUrl] = useState(
-    sessionedUserShop.imageUrl ? sessionedUserShop.imageUrl : null
+    shop.imageUrl ? shop.imageUrl : null
   );
   const [reset, setReset] = useState(false);
 
   const form = useForm({
     initialValues: {
-      name: sessionedUserShop.name,
-      description: sessionedUserShop.description,
+      name: shop.name,
+      description: shop.description,
       image: [],
     },
     validate: zodResolver(profileEditSchema),
@@ -281,7 +278,10 @@ const ProfileComponent = (props) => {
       })
       .then((res) => {
         const shop = res.data.Shop;
-        setSessionedUserShop(shop);
+        setSessionedUserData((prevState) => ({
+          ...prevState,
+          Shop: { ...shop },
+        }));
         sessionedUserShopRef.current = {
           ...sessionedUserShopRef.current,
           name: shop.name,

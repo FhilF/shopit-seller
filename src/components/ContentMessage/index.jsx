@@ -59,7 +59,7 @@ function ContentMessage(props) {
 const Err500 = () => {
   return (
     <>
-      <Image width={200} src={ErrorImage} />
+      <Image width={300} src={ErrorImage} />
       <Text weight={300} size={80} color="gray.6">
         Sorry!
       </Text>
@@ -73,7 +73,7 @@ const Err500 = () => {
 const Default = () => {
   return (
     <>
-      <Image width={200} src={NotFoundImage} />
+      <Image width={300} src={NotFoundImage} />
       <Text weight={300} size={80} color="gray.6">
         Sorry!
       </Text>
@@ -87,7 +87,7 @@ const Default = () => {
 const Item404 = () => {
   return (
     <>
-      <Image width={200} src={NotFoundImage} />
+      <Image width={300} src={NotFoundImage} />
       <Text weight={300} size={80} color="gray.6">
         Sorry!
       </Text>

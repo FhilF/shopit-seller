@@ -1,5 +1,5 @@
 {
-  "name": "yeti-web-seller",
+  "name": "shopit-seller",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -27,8 +27,8 @@
     "zod": "^3.19.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env NODE_ENV=production react-scripts start",
+    "build": "cross-env NODE_ENV=production react-scripts build",
     "dev": "cross-env NODE_ENV=development react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -18,14 +18,12 @@ import AddressTab from "./AddressTab";
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
 function Home(props) {
-  const { sessionedUserShop, setSessionedUserShop } = props;
+  const { sessionedUserData, setSessionedUserData } = useAuth();
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const sessionedUserShopRef = useRef({ ...sessionedUserData.Shop });
 
-  const sessionedUserShopRef = useRef(sessionedUserShop);
-
-  const { updateSessionedUser } = useAuth();
   return (
     <Paper className="content">
       <Box py="xl">
@@ -59,16 +57,16 @@ function Home(props) {
           <Tabs.Panel value="information">
             <InformationTab
               sessionedUserShopRef={sessionedUserShopRef}
-              setSessionedUserShop={setSessionedUserShop}
-              sessionedUserShop={sessionedUserShop}
+              setSessionedUserData={setSessionedUserData}
+              sessionedUserData={sessionedUserData}
             />
           </Tabs.Panel>
 
           <Tabs.Panel value="address">
             <AddressTab
               sessionedUserShopRef={sessionedUserShopRef}
-              setSessionedUserShop={setSessionedUserShop}
-              sessionedUserShop={sessionedUserShop}
+              setSessionedUserData={setSessionedUserData}
+              sessionedUserData={sessionedUserData}
             />
           </Tabs.Panel>
         </Tabs>

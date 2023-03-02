@@ -100,14 +100,16 @@ function Profile(props) {
         </Grid.Col>
         <Grid.Col span={12} sm={9} lg={8} className="item-b">
           <TextInput
+            name="shop-name"
             placeholder="Shop Name"
             disabled={isFormLoading}
+            autoComplete="off"
             {...form.getInputProps("name")}
           />
         </Grid.Col>
 
         <Grid.Col span={12} sm={3} lg={4} className="item-a">
-          <Text size="sm" weight={600} color="dark.4">
+          <Text size="sm" weight={600} color="dark.4" name="shop-description">
             Shop Description
           </Text>
         </Grid.Col>

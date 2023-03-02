@@ -33,17 +33,13 @@ import clsx from "clsx";
 import useStyles from "styles/js/layouts/global/header";
 function Index(props) {
   const navigate = useNavigate();
-  const { sessionedUser, signout } = props;
-
-  const deptNavRef = useRef(false);
-
+  const { sessionedUserData, signout } = props;
   const [open, setOpen] = useState(false);
-  const [openDepartment, setOpenDepartment] = useState(false);
   const { classes } = useStyles();
 
   return (
     <Box className={classes.header}>
-      <Box className="child">
+      <Box className="child responsive">
         <Box sx={() => ({ width: "100%", height: "100%" })}>
           <Group position="apart" className="inner-nav" sx={() => ({})}>
             <Group>
@@ -53,38 +49,21 @@ function Index(props) {
                 className="burger"
                 size="sm"
               />
-              <Group spacing={4}>
-                <img
-                  className="logo"
-                  src={process.env.PUBLIC_URL + "/shop-it-logo.png"}
-                  alt="shop-it-logo"
-                />
-                <Text color="gray.1">-</Text>
-                <Text weight={600} mt={5} color="yellow.7">
-                  Seller Portal
-                </Text>
-              </Group>
-            </Group>
-            <Group spacing={4} className="menu">
-              {/* <Link className="items" to="/">
-                <Text weight={600} size="sm">
-                  Home
-                </Text>
-              </Link>
-              <Box
-                className="items"
-                sx={() => ({ cursor: "pointer" })}
-                onClick={() => {
-                  setOpenDepartment(true);
-                  deptNavRef.current = false;
-                }}
-              >
-                <Group position="apart">
-                  <Text weight={600} size="sm">
-                    Departments
+              <UnstyledButton onClick={() => navigate("/")}>
+                <Group spacing={4}>
+                  <img
+                    className="logo"
+                    src={process.env.PUBLIC_URL + "/shop-it-logo.png"}
+                    alt="shop-it-logo"
+                  />
+                  <Text color="gray.1">-</Text>
+                  <Text weight={600} mt={5} color="yellow.7">
+                    Seller Portal
                   </Text>
                 </Group>
-              </Box> */}
+              </UnstyledButton>
+            </Group>
+            <Group spacing={4} className="menu">
               <Box
                 // ml="xl"
                 sx={() => ({
@@ -92,9 +71,9 @@ function Index(props) {
                   height: "100%",
                 })}
               >
-                {sessionedUser ? (
+                {sessionedUserData ? (
                   <ProfileHeader
-                    sessionedUser={sessionedUser}
+                    sessionedUserData={sessionedUserData}
                     signout={signout}
                   />
                 ) : (
@@ -127,7 +106,7 @@ function Index(props) {
   );
 }
 
-const ProfileHeader = ({ sessionedUser, signout }) => {
+const ProfileHeader = ({ sessionedUserData, signout }) => {
   const [open, setOpen] = useState(false);
   return (
     <Menu
@@ -162,17 +141,17 @@ const ProfileHeader = ({ sessionedUser, signout }) => {
             color="yellow.9"
             radius="xl"
             size={32}
-            src={sessionedUser.avatar}
+            src={sessionedUserData.avatar}
           >
-            {sessionedUser.username.charAt(0).toUpperCase()}
+            {sessionedUserData.username.charAt(0).toUpperCase()}
           </Avatar>
           <Text ml={6} size="sm" weight={700} color="gray.0">
-            {sessionedUser.username}
+            {sessionedUserData.username}
           </Text>
         </Box>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item
+        {/* <Menu.Item
           component={Link}
           to="/user/account/profile"
           icon={<IconUserCircle size={16} stroke={1.5} />}
@@ -200,7 +179,7 @@ const ProfileHeader = ({ sessionedUser, signout }) => {
           </Text>
         </Menu.Item>
 
-        <Menu.Divider />
+        <Menu.Divider /> */}
 
         {/* <Menu.Label>Danger zone</Menu.Label> */}
         <Menu.Item
