@@ -56,7 +56,7 @@ function Footer() {
                     className="footer-link"
                     color="yellow.7"
                     component="a"
-                    href={isProduction ? "" : "http://localhost:3000/"}
+                    href={isProduction ? "https://seller.shopit-demo.com" : "http://localhost:3000/"}
                   >
                     <Text size="sm">Shop It Main</Text>
                   </UnstyledButton>

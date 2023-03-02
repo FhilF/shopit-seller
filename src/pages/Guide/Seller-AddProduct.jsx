@@ -21,7 +21,7 @@ function AddProduct() {
               <a
                 target="_blank"
                 rel="noreferrer"
-                href={isProduction ? "seller.shopit.com" : "localhost:3001"}
+                href={isProduction ? "https://seller.shopit-demo.com" : "localhost:3001"}
               >
                 Shop It Seller Portal
               </a>
