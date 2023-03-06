@@ -56,7 +56,11 @@ function Footer() {
                     className="footer-link"
                     color="yellow.7"
                     component="a"
-                    href={isProduction ? "https://seller.shopit-demo.com" : "http://localhost:3000/"}
+                    href={
+                      isProduction
+                        ? "https://shopit-demo.com"
+                        : "http://localhost:3000/"
+                    }
                   >
                     <Text size="sm">Shop It Main</Text>
                   </UnstyledButton>
@@ -91,22 +95,28 @@ function Footer() {
                     Links
                   </Text>
                   <Group spacing="sm">
-                    <UnstyledButton className="contact-icon">
-                      <IconWorld />
-                    </UnstyledButton>
-                    <UnstyledButton className="contact-icon">
+                    <UnstyledButton
+                      className="contact-icon"
+                      component="a"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://linkedin.com/in/fhilip-fernandez"
+                    >
                       <IconBrandGithub />
                     </UnstyledButton>
-                    <UnstyledButton className="contact-icon">
+                    <UnstyledButton
+                      className="contact-icon"
+                      component="a"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://github.com/fhilf"
+                    >
                       <IconBrandLinkedin />
                     </UnstyledButton>
                   </Group>
                 </Stack>
               </Stack>
             </Grid.Col>
-            {/* <Grid.Col className="footer-top-item" span={12} md={4}>
-              aa
-            </Grid.Col> */}
           </Grid>
         </Box>
       </Flex>
@@ -125,7 +135,7 @@ function Footer() {
           component="a"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://stackoverflow.com/"
+          href="https://linkedin.com/in/fhilip-fernandez"
           sx={(theme) => ({
             color: theme.colors.yellow[8],
             textDecoration: "underline",

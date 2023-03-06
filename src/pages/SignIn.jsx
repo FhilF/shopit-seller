@@ -58,9 +58,33 @@ function SignIn(props) {
     );
   };
   return (
-    <Box>
+    <Box
+      sx={(theme) => ({
+        ".grid-col-1": {
+          display: "none",
+        },
+        ".gril-col-2": {
+          div: {
+            justifyContent: "center",
+          },
+        },
+        [theme.fn.largerThan("sm")]: {
+          ".grid-col-1": {
+            display: "block",
+          },
+          ".gril-col-2": {
+            ".sign-in-container": {
+              justifyContent: "flex-end",
+              ".sign-in-content": {
+                width: "400px",
+              },
+            },
+          },
+        },
+      })}
+    >
       <Grid>
-        <Grid.Col span={7}>
+        <Grid.Col className="grid-col-1" span={7}>
           <Box
             sx={(theme) => ({
               marginTop: "40px",
@@ -79,17 +103,17 @@ function SignIn(props) {
             {/* </Box> */}
           </Box>
         </Grid.Col>
-        <Grid.Col span={5}>
+        <Grid.Col className="gril-col-2" span={12} sm={5}>
           <Box
+          className="sign-in-container"
             sx={{
               display: "flex",
               height: "100%",
               alignItems: "center",
               marginTop: "30px",
-              justifyContent: "flex-end",
             }}
           >
-            <Paper shadow="lg" radius="xs" p="xl" sx={{ width: "400px" }}>
+            <Paper className="sign-in-content" shadow="lg" radius="xs" p="xl">
               <Stack spacing={0}>
                 <Text color="dark.3" size={26} weight={600}>
                   Sign In
@@ -138,7 +162,11 @@ function SignIn(props) {
                   onClick={() => {
                     signInGoogle();
                   }}
-                  leftIcon={<Flex p={4} bg="#ffffff"><Image height={15} src={GoogleIcon} /></Flex>}
+                  leftIcon={
+                    <Flex p={4} bg="#ffffff">
+                      <Image height={15} src={GoogleIcon} />
+                    </Flex>
+                  }
                 >
                   Sign in with Google
                 </Button>

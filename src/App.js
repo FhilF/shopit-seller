@@ -4,12 +4,9 @@ import CreateAccount from "pages/CreateAccount";
 
 import { Routes, Route, Navigate, useRoutes } from "react-router-dom";
 import { useAuth } from "utils/authProvider";
-import { Box } from "@mantine/core";
 import GlobalLayout from "layouts/Global";
 import PortalLayout from "layouts/Portal";
 
-// import "./utils/axiosDefault";
-import axios from "axios";
 import SetupShop from "pages/SetupShop";
 import HomePage from "pages/Portal/Home";
 import ProductPage from "pages/Portal/Product";
@@ -19,9 +16,6 @@ import Order from "pages/Portal/Order";
 import View from "pages/Portal/Order/View";
 import Guide from "pages/Guide";
 import NavigateUser from "components/NavigateUser";
-// import ProfilePage from "pages/User/Account";
-// import AddressPage from "pages/User/Account/Address";
-// import OrderPage from "pages/User/Order";
 
 function App() {
   const { getSessionedUser, sessionedUserData, signout } = useAuth();

@@ -36,8 +36,7 @@ const useStyles = createStyles((theme) => ({
             width: "200px",
             minWidth: "200px",
           },
-          [theme.fn.largerThan("xl")]: {
-          },
+          [theme.fn.largerThan("xl")]: {},
           ".nav-group": {
             ".nav-item-container": {
               ".link": {
@@ -98,8 +97,10 @@ const useStyles = createStyles((theme) => ({
         },
         marginLeft: "24px",
         ".content": {
-          paddingRight: "30px",
-          paddingLeft: "30px",
+          [theme.fn.largerThan("md")]: {
+            paddingRight: "30px",
+            paddingLeft: "30px",
+          },
           borderLeft: "2px solid #f6f6f6",
           boxSizing: "border-box",
           outline: "0",

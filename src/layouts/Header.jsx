@@ -5,11 +5,13 @@ import {
   Box,
   Burger,
   Button,
+  Divider,
   Drawer,
   Group,
   Indicator,
   Menu,
   Paper,
+  Stack,
   Text,
   Transition,
   UnstyledButton,
@@ -18,9 +20,14 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   IconAddressBook,
   IconArrowLeft,
+  IconBuildingStore,
   IconChevronRight,
+  IconDoorEnter,
   IconDoorExit,
+  IconHome,
+  IconList,
   IconPackage,
+  IconReceipt,
   IconShoppingCart,
   IconUser,
   IconUserCircle,
@@ -34,7 +41,7 @@ import useStyles from "styles/js/layouts/global/header";
 function Index(props) {
   const navigate = useNavigate();
   const { sessionedUserData, signout } = props;
-  const [open, setOpen] = useState(false);
+  const [openNav, setOpenNav] = useState(false);
   const { classes } = useStyles();
 
   return (
@@ -44,10 +51,11 @@ function Index(props) {
           <Group position="apart" className="inner-nav" sx={() => ({})}>
             <Group>
               <Burger
-                opened={open}
-                onClick={() => setOpen((val) => !val)}
+                opened={openNav}
+                onClick={() => setOpenNav((val) => !val)}
                 className="burger"
                 size="sm"
+                color="white"
               />
               <UnstyledButton onClick={() => navigate("/")}>
                 <Group spacing={4}>
@@ -91,30 +99,199 @@ function Index(props) {
                   </a>
                 )}
               </Box>
-              {/* <Box ml="xs" sx={() => ({ height: "100%" })}>
-                <a href=" #" className="items">
-                  <Indicator label={0} size={16} sx={() => ({ fontSize: 0 })}>
-                    <IconShoppingCart />
-                  </Indicator>
-                </a>
-              </Box> */}
             </Group>
           </Group>
         </Box>
       </Box>
+      <BurgerDrawer
+        classes={classes}
+        setOpenNav={setOpenNav}
+        openNav={openNav}
+        navigate={navigate}
+        sessionedUserData={sessionedUserData}
+        signout={signout}
+      />
     </Box>
   );
 }
 
+const BurgerDrawer = (props) => {
+  const { classes, openNav, setOpenNav, sessionedUserData, navigate, signout } =
+    props;
+  return (
+    <Drawer
+      lockScroll={true}
+      className={classes.drawer}
+      opened={openNav}
+      onClose={() => setOpenNav((val) => !val)}
+      title=""
+      size="lg"
+      withCloseButton={false}
+    >
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ flex: 0 }} pb={10} className="drawer-header">
+          <Group pt={20} pb={30} position="apart">
+            <UnstyledButton component="a" href="/">
+              <img
+                className="logo"
+                src={process.env.PUBLIC_URL + "/shop-it-logo.png"}
+                alt="shop-it-logo"
+              />
+            </UnstyledButton>
+
+            <ActionIcon
+              onClick={() => {
+                setOpenNav(false);
+              }}
+            >
+              <IconX />
+            </ActionIcon>
+          </Group>
+        </Box>
+        <Box sx={{ flex: 1 }} className="drawer-menu">
+          <Stack spacing="lg">
+            {sessionedUserData ? (
+              <>
+                <UnstyledButton
+                  className="items"
+                  component="a"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenNav(false);
+                    navigate("/portal");
+                  }}
+                >
+                  <Group spacing="sm">
+                    <IconBuildingStore className="menu-item-icon" />
+                    <Text weight={600} size={15} color="blueGray.8">
+                      Shop
+                    </Text>
+                  </Group>
+                </UnstyledButton>
+                <UnstyledButton
+                  className="items"
+                  component="a"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenNav(false);
+                    navigate("/portal/product");
+                  }}
+                >
+                  <Group spacing="sm">
+                    <IconReceipt className="menu-item-icon" />
+                    <Text weight={600} size={15} color="blueGray.8">
+                      Products
+                    </Text>
+                  </Group>
+                </UnstyledButton>
+                <UnstyledButton
+                  className="items"
+                  component="a"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenNav(false);
+                    navigate("/portal/order");
+                  }}
+                >
+                  <Group spacing="sm">
+                    <IconPackage className="menu-item-icon" />
+                    <Text weight={600} size={15} color="blueGray.8">
+                      Orders
+                    </Text>
+                  </Group>
+                </UnstyledButton>
+              </>
+            ) : (
+              <UnstyledButton
+                  className="items"
+                  component="a"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenNav(false);
+                    navigate("/portal/order");
+                  }}
+                >
+                  <Group spacing="sm">
+                    <IconPackage className="menu-item-icon" />
+                    <Text weight={600} size={15} color="blueGray.8">
+                      Orders
+                    </Text>
+                  </Group>
+                </UnstyledButton>
+            )}
+          </Stack>
+        </Box>
+        <Box sx={{ flex: 0 }} pb="xl">
+          <Divider mb="sm" />
+          {sessionedUserData ? (
+            <UnstyledButton
+              sx={{
+                width: "100%",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                color: "#25262b",
+                fontWeight: "600",
+                WebkitTextDecoration: "none",
+                textDecoration: "none",
+                fontSize: "18px",
+                height: "100%",
+              }}
+              onClick={() => {
+                setOpenNav(false);
+                signout();
+                navigate("/");
+              }}
+            >
+              <Group spacing="sm">
+                <IconDoorExit size={18} className="menu-item-icon" />
+                <Text weight={600} size={15} color="blueGray.8">
+                  Sign Out
+                </Text>
+              </Group>
+            </UnstyledButton>
+          ) : (
+            <UnstyledButton
+              sx={{
+                width: "100%",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                color: "#25262b",
+                fontWeight: "600",
+                WebkitTextDecoration: "none",
+                textDecoration: "none",
+                fontSize: "18px",
+                height: "100%",
+              }}
+              onClick={() => {
+                setOpenNav(false);
+                navigate("/sign-in");
+              }}
+            >
+              <Group spacing="sm">
+                <IconDoorEnter size={18} className="menu-item-icon" />
+                <Text weight={600} size={15} color="blueGray.8">
+                  Sign in
+                </Text>
+              </Group>
+            </UnstyledButton>
+          )}
+        </Box>
+      </Box>
+
+      {/* Drawer content */}
+    </Drawer>
+  );
+};
+
 const ProfileHeader = ({ sessionedUserData, signout }) => {
-  const [open, setOpen] = useState(false);
+  const [openNav, setOpenNav] = useState(false);
   return (
     <Menu
       width={260}
       position="bottom-end"
       transition="pop-top-right"
-      opened={open}
-      onChange={setOpen}
+      opened={openNav}
+      onChange={setOpenNav}
     >
       <Menu.Target>
         <Box
@@ -151,37 +328,6 @@ const ProfileHeader = ({ sessionedUserData, signout }) => {
         </Box>
       </Menu.Target>
       <Menu.Dropdown>
-        {/* <Menu.Item
-          component={Link}
-          to="/user/account/profile"
-          icon={<IconUserCircle size={16} stroke={1.5} />}
-        >
-          <Text weight={500} size="sm" color="dark.4">
-            My Account
-          </Text>
-        </Menu.Item>
-        <Menu.Item
-          component={Link}
-          to="/orders"
-          icon={<IconPackage size={16} stroke={1.5} />}
-        >
-          <Text weight={500} size="sm" color="dark.4">
-            Orders
-          </Text>
-        </Menu.Item>
-        <Menu.Item
-          component={Link}
-          to="/addresses"
-          icon={<IconAddressBook size={16} stroke={1.5} />}
-        >
-          <Text weight={500} size="sm" color="dark.4">
-            Addresses
-          </Text>
-        </Menu.Item>
-
-        <Menu.Divider /> */}
-
-        {/* <Menu.Label>Danger zone</Menu.Label> */}
         <Menu.Item
           icon={<IconDoorExit size={14} stroke={1.5} />}
           onClick={() => {
