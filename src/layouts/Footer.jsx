@@ -100,6 +100,15 @@ function Footer() {
                       component="a"
                       target="_blank"
                       rel="noopener noreferrer"
+                      href="https://fhilipfernandez.com"
+                    >
+                      <IconWorld />
+                    </UnstyledButton>
+                    <UnstyledButton
+                      className="contact-icon"
+                      component="a"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       href="https://linkedin.com/in/fhilip-fernandez"
                     >
                       <IconBrandGithub />
@@ -135,7 +144,7 @@ function Footer() {
           component="a"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://linkedin.com/in/fhilip-fernandez"
+          href="https://fhilipfernandez.com"
           sx={(theme) => ({
             color: theme.colors.yellow[8],
             textDecoration: "underline",

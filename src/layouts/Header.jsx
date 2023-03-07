@@ -150,7 +150,7 @@ const BurgerDrawer = (props) => {
         </Box>
         <Box sx={{ flex: 1 }} className="drawer-menu">
           <Stack spacing="lg">
-            {sessionedUserData ? (
+            {sessionedUserData && (
               <>
                 <UnstyledButton
                   className="items"
@@ -201,23 +201,6 @@ const BurgerDrawer = (props) => {
                   </Group>
                 </UnstyledButton>
               </>
-            ) : (
-              <UnstyledButton
-                  className="items"
-                  component="a"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenNav(false);
-                    navigate("/portal/order");
-                  }}
-                >
-                  <Group spacing="sm">
-                    <IconPackage className="menu-item-icon" />
-                    <Text weight={600} size={15} color="blueGray.8">
-                      Orders
-                    </Text>
-                  </Group>
-                </UnstyledButton>
             )}
           </Stack>
         </Box>
